@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useSpring, useTransform, motion } from "framer-motion";
 
 const TOTAL_FRAMES = 50;
 
@@ -23,31 +23,40 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
     offset: ["start start", "end end"],
   });
 
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 180,
+    damping: 32,
+    mass: 0.25,
+    restDelta: 0.0005,
+  });
+
+  // Complete the hero sequence a bit earlier to feel faster while keeping scroll control.
+  const tunedProgress = useTransform(smoothProgress, [0, 0.82, 1], [0, 1, 1]);
+
   const currentFrameIndex = useTransform(
-    scrollYProgress,
+    tunedProgress,
     [0, 1],
     [0, TOTAL_FRAMES - 1]
   );
 
-  const opacity1 = useTransform(scrollYProgress, [0, 0.15, 0.20], [1, 1, 0]);
-  const y1 = useTransform(scrollYProgress, [0, 0.20], [0, -50]);
-  const scale1 = useTransform(scrollYProgress, [0, 0.20], [1, 1.05]);
+  const opacity1 = useTransform(tunedProgress, [0, 0.15, 0.20], [1, 1, 0]);
+  const y1 = useTransform(tunedProgress, [0, 0.20], [0, -50]);
+  const scale1 = useTransform(tunedProgress, [0, 0.20], [1, 1.05]);
 
-  const opacity2 = useTransform(scrollYProgress, [0.20, 0.25, 0.40, 0.45], [0, 1, 1, 0]);
-  const y2 = useTransform(scrollYProgress, [0.20, 0.25, 0.45], [50, 0, -50]);
-  const scale2 = useTransform(scrollYProgress, [0.20, 0.25, 0.45], [0.95, 1, 1.05]);
+  const opacity2 = useTransform(tunedProgress, [0.20, 0.25, 0.40, 0.45], [0, 1, 1, 0]);
+  const y2 = useTransform(tunedProgress, [0.20, 0.25, 0.45], [50, 0, -50]);
+  const scale2 = useTransform(tunedProgress, [0.20, 0.25, 0.45], [0.95, 1, 1.05]);
 
-  const opacity3 = useTransform(scrollYProgress, [0.45, 0.50, 0.65, 0.70], [0, 1, 1, 0]);
-  const y3 = useTransform(scrollYProgress, [0.45, 0.50, 0.70], [50, 0, -50]);
-  const scale3 = useTransform(scrollYProgress, [0.45, 0.50, 0.70], [0.95, 1, 1.05]);
+  const opacity3 = useTransform(tunedProgress, [0.45, 0.50, 0.65, 0.70], [0, 1, 1, 0]);
+  const y3 = useTransform(tunedProgress, [0.45, 0.50, 0.70], [50, 0, -50]);
+  const scale3 = useTransform(tunedProgress, [0.45, 0.50, 0.70], [0.95, 1, 1.05]);
 
-  const opacity4 = useTransform(scrollYProgress, [0.70, 0.75, 0.95, 1], [0, 1, 1, 0]);
-  const y4 = useTransform(scrollYProgress, [0.70, 0.75, 1], [50, 0, -50]);
-  const scale4 = useTransform(scrollYProgress, [0.70, 0.75, 1], [0.95, 1, 1.05]);
+  const opacity4 = useTransform(tunedProgress, [0.70, 0.75, 0.95, 1], [0, 1, 1, 0]);
+  const y4 = useTransform(tunedProgress, [0.70, 0.75, 1], [50, 0, -50]);
+  const scale4 = useTransform(tunedProgress, [0.70, 0.75, 1], [0.95, 1, 1.05]);
 
   useEffect(() => {
     let loadedCount = 0;
-    const loadedImages: HTMLImageElement[] = [];
 
     const loadImages = async () => {
       const promises = Array.from({ length: TOTAL_FRAMES }).map((_, index) => {
@@ -159,7 +168,7 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
   }, [isReady, images, currentFrameIndex]);
 
   return (
-    <div ref={containerRef} className="relative h-[1200vh] bg-black">
+    <div ref={containerRef} className="relative h-[1000vh] bg-black">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <canvas
           ref={canvasRef}
