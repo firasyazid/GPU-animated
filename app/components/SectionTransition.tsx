@@ -25,7 +25,6 @@ export default function SectionTransition({
     offset: ["start end", "end start"],
   });
 
-  // ─── Entry (section scrolling into viewport from below) ───
   const entryOpacity = useTransform(
     scrollYProgress,
     [0, 0.12],
@@ -42,7 +41,6 @@ export default function SectionTransition({
     disableEntry ? [1, 1] : [0.97, 1]
   );
 
-  // ─── Exit (section scrolling out of viewport to top) ───
   const exitOpacity = useTransform(
     scrollYProgress,
     [0.88, 1],
@@ -59,9 +57,6 @@ export default function SectionTransition({
     disableExit ? [1, 1] : [1, 0.97]
   );
 
-  // ─── Combined transforms ───
-  // Combine entry & exit into single values. During the active middle portion
-  // (0.12 → 0.88) everything is at identity (opacity 1, y 0, scale 1).
   const combinedOpacity = useTransform(
     () => entryOpacity.get() * exitOpacity.get()
   );

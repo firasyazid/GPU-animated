@@ -12,13 +12,10 @@ export default function VrmSection() {
     offset: ["start end", "end start"],
   });
 
-  // --- IMAGE ANIMATIONS ---
-  // Slide in from RIGHT & fade in (mirrored from GPU Die)
   const imgX = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [120, 0, 0, 60]);
   const imgOpacity = useTransform(scrollYProgress, [0, 0.2, 0.75, 1], [0, 1, 1, 0]);
   const imgY = useTransform(scrollYProgress, [0.75, 1], [0, -80]);
 
-  // --- TEXT ANIMATIONS (staggered reveals) ---
   const labelOpacity = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
   const labelY = useTransform(scrollYProgress, [0.1, 0.25], [20, 0]);
 
@@ -37,7 +34,6 @@ export default function VrmSection() {
   const desc3Opacity = useTransform(scrollYProgress, [0.4, 0.52], [0, 1]);
   const desc3Y = useTransform(scrollYProgress, [0.4, 0.52], [20, 0]);
 
-  // Fade out everything on exit
   const sectionOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
 
   return (
@@ -50,9 +46,7 @@ export default function VrmSection() {
           style={{ opacity: sectionOpacity }}
           className="h-full w-full flex items-center justify-center px-8 md:px-24 max-w-7xl mx-auto"
         >
-          {/* ===== LEFT: TEXT ===== */}
           <div className="w-1/2 flex flex-col justify-center pr-12 md:pr-20">
-            {/* Label */}
             <motion.span
               style={{ opacity: labelOpacity, y: labelY }}
               className="text-white/50 font-mono tracking-[0.3em] text-xs uppercase mb-8 block text-glow"
@@ -60,13 +54,11 @@ export default function VrmSection() {
               02 / VRM
             </motion.span>
 
-            {/* Hairline separator */}
             <motion.div
               style={{ opacity: lineOpacity, width: lineWidth }}
               className="h-px bg-white/20 mb-10 max-w-xs"
             />
 
-            {/* Headline */}
             <motion.h2
               style={{ opacity: headlineOpacity, y: headlineY }}
               className="mb-12"
@@ -79,7 +71,6 @@ export default function VrmSection() {
               </span>
             </motion.h2>
 
-            {/* Description lines */}
             <div className="flex flex-col gap-5">
               <motion.p
                 style={{ opacity: desc1Opacity, y: desc1Y }}
@@ -102,12 +93,10 @@ export default function VrmSection() {
             </div>
           </div>
 
-          {/* ===== RIGHT: IMAGE ===== */}
           <motion.div
             style={{ x: imgX, opacity: imgOpacity, y: imgY, perspective: 1000 }}
             className="w-1/2 flex items-center justify-center relative"
           >
-            {/* Warm amber ambient glow behind VRM */}
             <motion.div
               className="absolute w-[70%] h-[70%] rounded-full pointer-events-none"
               style={{
@@ -122,7 +111,6 @@ export default function VrmSection() {
             />
 
             <InteractiveTilt>
-              {/* The floating VRM */}
               <motion.img
                 src="/VRM.png"
                 alt="VRM — Voltage Regulator Module"

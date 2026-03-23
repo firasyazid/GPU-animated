@@ -18,40 +18,33 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [isReady, setIsReady] = useState(false);
 
-  // Scroll tracking
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  // Map scroll (0 -> 1) to frame index (0 -> TOTAL_FRAMES - 1)
   const currentFrameIndex = useTransform(
     scrollYProgress,
     [0, 1],
     [0, TOTAL_FRAMES - 1]
   );
 
-  // Section 1: Intro (0% to 20%) -> Fade out between 15% and 20%
   const opacity1 = useTransform(scrollYProgress, [0, 0.15, 0.20], [1, 1, 0]);
   const y1 = useTransform(scrollYProgress, [0, 0.20], [0, -50]);
   const scale1 = useTransform(scrollYProgress, [0, 0.20], [1, 1.05]);
 
-  // Section 2: What is GPU (20% to 45%) -> Fade in 20-25, hold, fade out 40-45
   const opacity2 = useTransform(scrollYProgress, [0.20, 0.25, 0.40, 0.45], [0, 1, 1, 0]);
   const y2 = useTransform(scrollYProgress, [0.20, 0.25, 0.45], [50, 0, -50]);
   const scale2 = useTransform(scrollYProgress, [0.20, 0.25, 0.45], [0.95, 1, 1.05]);
 
-  // Section 3: Why we use it (45% to 70%) -> Fade in 45-50, hold, fade out 65-70
   const opacity3 = useTransform(scrollYProgress, [0.45, 0.50, 0.65, 0.70], [0, 1, 1, 0]);
   const y3 = useTransform(scrollYProgress, [0.45, 0.50, 0.70], [50, 0, -50]);
   const scale3 = useTransform(scrollYProgress, [0.45, 0.50, 0.70], [0.95, 1, 1.05]);
 
-  // Section 4: Conclusion (70% onwards) -> Fade in 70-75, stay until 100%
   const opacity4 = useTransform(scrollYProgress, [0.70, 0.75, 0.95, 1], [0, 1, 1, 0]);
   const y4 = useTransform(scrollYProgress, [0.70, 0.75, 1], [50, 0, -50]);
   const scale4 = useTransform(scrollYProgress, [0.70, 0.75, 1], [0.95, 1, 1.05]);
 
-  // Preload images
   useEffect(() => {
     let loadedCount = 0;
     const loadedImages: HTMLImageElement[] = [];
@@ -60,7 +53,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
       const promises = Array.from({ length: TOTAL_FRAMES }).map((_, index) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           const img = new Image();
-          // Images are named kling_20260323_作品_Start_with_1922_0_000.jpg -> 049.jpg
           const frameNumber = index.toString().padStart(3, "0");
           img.src = `/kling_20260323_作品_Start_with_1922_0_${frameNumber}.jpg`;
 
@@ -89,7 +81,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
     loadImages();
   }, [onLoadComplete, onProgress]);
 
-  // Draw on canvas
   useEffect(() => {
     if (!isReady || images.length === 0 || !canvasRef.current) return;
 
@@ -100,12 +91,10 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
     let animationFrameId: number;
 
     const render = () => {
-      // Important to use get() to get the current animated value
       const frameIndex = Math.floor(currentFrameIndex.get() || 0);
       const img = images[frameIndex];
 
       if (img) {
-        // High-DPI (Retina) Canvas Support to fix blurriness
         const dpr = window.devicePixelRatio || 1;
         const cWidth = window.innerWidth;
         const cHeight = window.innerHeight;
@@ -115,11 +104,9 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
         canvas.style.width = `${cWidth}px`;
         canvas.style.height = `${cHeight}px`;
 
-        // Clear canvas base
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Scale context by device pixel ratio for sharp rendering
         ctx.save();
         ctx.scale(dpr, dpr);
         ctx.imageSmoothingEnabled = true;
@@ -127,26 +114,18 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
 
         let scale;
         if (cWidth > cHeight) {
-          // On desktop (landscape), make the laptop width about 45% of the screen width
-          // but ensure it's at least as tall as the screen
           scale = Math.max((cWidth * 0.45) / img.width, cHeight / img.height);
         } else {
-          // On mobile (portrait), make it fill the width completely
           scale = Math.max(cWidth / img.width, cHeight / img.height);
         }
 
         const drawW = img.width * scale;
         const drawH = img.height * scale;
 
-        // Center the image perfectly
         const dx = (cWidth - drawW) / 2;
         const dy = (cHeight - drawH) / 2;
 
-        // Draw the main, sharp high-res image
         ctx.drawImage(img, dx, dy, drawW, drawH);
-
-        // --- SEAMLESS EDGE STRETCHING ---
-        // Prevent the rectangular video boundaries from showing by stretching the 1-pixel outer edge to the screen bounds.
 
         if (dx > 0) {
           ctx.drawImage(img, 0, 0, 1, img.height, 0, dy, dx + 1, drawH); // Left edge
@@ -161,7 +140,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
           ctx.drawImage(img, 0, img.height - 1, img.width, 1, dx, dy + drawH - 1, drawW, cHeight - (dy + drawH) + 2); // Bottom edge
         }
 
-        // corners fill
         if (dx > 0 && dy > 0) ctx.drawImage(img, 0, 0, 1, 1, 0, 0, dx + 1, dy + 1);
         if (dx + drawW < cWidth && dy > 0) ctx.drawImage(img, img.width - 1, 0, 1, 1, dx + drawW - 1, 0, cWidth - (dx + drawW) + 2, dy + 1);
         if (dx > 0 && dy + drawH < cHeight) ctx.drawImage(img, 0, img.height - 1, 1, 1, 0, dy + drawH - 1, dx + 1, cHeight - (dy + drawH) + 2);
@@ -182,29 +160,23 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
 
   return (
     <div ref={containerRef} className="relative h-[1200vh] bg-black">
-      {/* Sticky Canvas Container */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <canvas
           ref={canvasRef}
           className="absolute inset-0 h-full w-full"
         />
 
-        {/* Stronger vignette/gradient over canvas to blend horizontal and vertical edges into pure black */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_30%,_black_80%)] pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-80 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-l from-black via-transparent to-black opacity-80 pointer-events-none" />
 
-        {/* Text Overlays Layer */}
-
         <div ref={textContainerRef} className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
 
-          {/* Section 1: Hero */}
           <motion.div
             style={{ opacity: opacity1, y: y1, scale: scale1 }}
             className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
           >
             <div className="flex flex-col items-center text-center relative z-10">
-              {/* Pure dark bloom to ensure text pops without needing a box */}
               <div className="absolute -inset-32 bg-black/60 blur-[60px] rounded-full pointer-events-none" />
 
               <div className="relative">
@@ -215,7 +187,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
               </div>
             </div>
 
-            {/* Scroll Indicator */}
             <motion.div
               className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-white/40 pointer-events-none"
             >
@@ -230,7 +201,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
             </motion.div>
           </motion.div>
 
-          {/* Section 2: Separation */}
           <motion.div
             style={{ opacity: opacity2, y: y2, scale: scale2 }}
             className="absolute inset-0 flex flex-col items-start justify-center px-10 md:px-32 max-w-7xl mx-auto"
@@ -250,7 +220,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
             </div>
           </motion.div>
 
-          {/* Section 3: Exploded View */}
           <motion.div
             style={{ opacity: opacity3, y: y3, scale: scale3 }}
             className="absolute inset-0 flex flex-col items-end justify-center text-right px-10 md:px-32 max-w-7xl mx-auto"
@@ -270,7 +239,6 @@ export default function Hero({ onLoadComplete, onProgress }: HeroProps) {
             </div>
           </motion.div>
 
-          {/* Section 4: Reassembly & CTA */}
           <motion.div
             style={{ opacity: opacity4, y: y4, scale: scale4 }}
             className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"

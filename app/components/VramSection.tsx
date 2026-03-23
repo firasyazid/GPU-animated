@@ -12,13 +12,10 @@ export default function VramSection() {
     offset: ["start end", "end start"],
   });
 
-  // --- IMAGE ANIMATIONS ---
-  // Slide in from RIGHT & fade in
   const imgX = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [120, 0, 0, 60]);
   const imgOpacity = useTransform(scrollYProgress, [0, 0.2, 0.75, 1], [0, 1, 1, 0]);
   const imgY = useTransform(scrollYProgress, [0.75, 1], [0, -80]);
 
-  // --- TEXT ANIMATIONS (staggered reveals) ---
   const labelOpacity = useTransform(scrollYProgress, [0.1, 0.25], [0, 1]);
   const labelY = useTransform(scrollYProgress, [0.1, 0.25], [20, 0]);
 
@@ -49,9 +46,7 @@ export default function VramSection() {
           style={{ opacity: sectionOpacity }}
           className="h-full w-full flex items-center justify-center px-8 md:px-24 max-w-7xl mx-auto"
         >
-          {/* ===== LEFT: TEXT ===== */}
           <div className="w-1/2 flex flex-col justify-center pr-12 md:pr-20">
-            {/* Label */}
             <motion.span
               style={{ opacity: labelOpacity, y: labelY }}
               className="text-white/50 font-mono tracking-[0.3em] text-xs uppercase mb-8 block text-glow"
@@ -59,13 +54,11 @@ export default function VramSection() {
               02 / VRAM
             </motion.span>
 
-            {/* Hairline separator */}
             <motion.div
               style={{ opacity: lineOpacity, width: lineWidth }}
               className="h-px bg-white/20 mb-10 max-w-xs"
             />
 
-            {/* Headline */}
             <motion.h2
               style={{ opacity: headlineOpacity, y: headlineY }}
               className="mb-12"
@@ -78,7 +71,6 @@ export default function VramSection() {
               </span>
             </motion.h2>
 
-            {/* Description lines */}
             <div className="flex flex-col gap-5">
               <motion.p
                 style={{ opacity: desc1Opacity, y: desc1Y }}
@@ -101,12 +93,10 @@ export default function VramSection() {
             </div>
           </div>
 
-          {/* ===== RIGHT: IMAGE ===== */}
           <motion.div
             style={{ x: imgX, opacity: imgOpacity, y: imgY, perspective: 1000 }}
             className="w-1/2 flex items-center justify-center relative"
           >
-            {/* Soft pink/purple ambient glow behind VRAM */}
             <motion.div
               className="absolute w-[70%] h-[70%] rounded-full pointer-events-none"
               style={{
@@ -121,7 +111,6 @@ export default function VramSection() {
             />
 
             <InteractiveTilt>
-              {/* The floating VRAM */}
               <motion.img
                 src="/VRAM.png"
                 alt="VRAM — Video Memory"

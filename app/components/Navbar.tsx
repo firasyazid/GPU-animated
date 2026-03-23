@@ -42,7 +42,7 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // initial
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -57,7 +57,6 @@ export default function Navbar() {
     <motion.nav
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      // Delay so it animates in exactly when the loading screen finishes
       transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
       className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] flex items-center p-1.5 rounded-2xl bg-[#0a0a0a]/80 md:bg-white/5 border border-white/10 backdrop-blur-3xl shadow-2xl max-w-[95vw] md:max-w-none"
     >
