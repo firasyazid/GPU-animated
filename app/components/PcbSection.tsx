@@ -54,11 +54,11 @@ export default function PcbSection() {
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <motion.div
           style={{ opacity: sectionOpacity }}
-          className="h-full w-full flex items-center justify-center px-8 md:px-24 max-w-7xl mx-auto"
+          className="h-full w-full flex flex-col md:flex-row items-center justify-center px-6 md:px-24 max-w-7xl mx-auto"
         >
           <motion.div
             style={{ x: imgX, opacity: imgOpacity, y: imgY, perspective: 1000 }}
-            className="w-1/2 flex items-center justify-center relative"
+            className="w-full md:w-1/2 flex items-center justify-center relative mb-12 md:mb-0 mt-8 md:mt-0"
           >
             <motion.div
               className="absolute w-[70%] h-[70%] rounded-full pointer-events-none"
@@ -77,7 +77,7 @@ export default function PcbSection() {
               <motion.img
                 src="/PCB.png"
                 alt="PCB — Printed Circuit Board"
-                className="relative z-10 w-[75%] max-w-lg drop-shadow-[0_0_60px_rgba(59,130,246,0.15)]"
+                className="relative z-10 w-[80%] md:w-[75%] max-w-lg drop-shadow-[0_0_60px_rgba(59,130,246,0.15)]"
                 animate={{ y: [0, -12, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
               />
@@ -93,47 +93,47 @@ export default function PcbSection() {
             </InteractiveTilt>
           </motion.div>
 
-          <div className="w-1/2 flex flex-col justify-center pl-12 md:pl-20">
+          <div className="w-full md:w-1/2 flex flex-col justify-center pl-0 md:pl-12 lg:pl-20 text-center md:text-left items-center md:items-start px-4 md:px-0">
             <motion.span
               style={{ opacity: labelOpacity, y: labelY }}
-              className="text-white/50 font-mono tracking-[0.3em] text-xs uppercase mb-8 block text-glow"
+              className="text-white/50 font-mono tracking-[0.3em] text-xs uppercase mb-6 md:mb-8 block text-glow"
             >
               03 / PCB
             </motion.span>
 
             <motion.div
               style={{ opacity: lineOpacity, width: lineWidth }}
-              className="h-px bg-white/20 mb-10 max-w-xs"
+              className="h-px bg-white/20 mb-8 md:mb-10 w-full max-w-[200px] md:max-w-xs mx-auto md:mx-0"
             />
 
             <motion.h2
               style={{ opacity: headlineOpacity, y: headlineY }}
               className="mb-12"
             >
-              <span className="block text-6xl md:text-7xl font-bold tracking-tighter text-white drop-shadow-lg">
+              <span className="block text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white drop-shadow-lg">
                 The Foundation.
               </span>
-              <span className="block text-6xl md:text-7xl font-bold tracking-tighter text-white/40 mt-2">
+              <span className="block text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white/40 mt-1 md:mt-2">
                 The Network.
               </span>
             </motion.h2>
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4 md:gap-5">
               <motion.p
                 style={{ opacity: desc1Opacity, y: desc1Y }}
-                className="text-lg md:text-xl text-zinc-400 font-light leading-relaxed"
+                className="text-base md:text-lg lg:text-xl text-zinc-400 font-light leading-relaxed"
               >
                 A multi-layered printed circuit board routing thousands of dense signals.
               </motion.p>
               <motion.p
                 style={{ opacity: desc2Opacity, y: desc2Y }}
-                className="text-lg md:text-xl text-zinc-400 font-light leading-relaxed"
+                className="text-base md:text-lg lg:text-xl text-zinc-400 font-light leading-relaxed"
               >
                 High-speed interconnects communicating at the speed of light.
               </motion.p>
               <motion.p
                 style={{ opacity: desc3Opacity, y: desc3Y }}
-                className="text-lg md:text-xl text-zinc-400 font-light leading-relaxed"
+                className="text-base md:text-lg lg:text-xl text-zinc-400 font-light leading-relaxed"
               >
                 The literal backbone mapping the entire architecture together.
               </motion.p>
