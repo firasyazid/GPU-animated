@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import InteractiveTilt from "./InteractiveTilt";
+import HudOverlay from "./HudOverlay";
 
 export default function PcbSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [hudActive, setHudActive] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -35,6 +37,14 @@ export default function PcbSection() {
   const desc3Y = useTransform(scrollYProgress, [0.4, 0.52], [20, 0]);
 
   const sectionOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.2 && latest < 0.8) {
+      if (!hudActive) setHudActive(true);
+    } else {
+      if (hudActive) setHudActive(false);
+    }
+  });
 
   return (
     <section
@@ -70,6 +80,15 @@ export default function PcbSection() {
                 className="relative z-10 w-[75%] max-w-lg drop-shadow-[0_0_60px_rgba(59,130,246,0.15)]"
                 animate={{ y: [0, -12, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+              />
+              <HudOverlay 
+                isVisible={hudActive} 
+                side="left"
+                stats={[
+                  { label: "Substrate", value: "14-Layer PCB" },
+                  { label: "Traces", value: "High-Speed Low-Loss" },
+                  { label: "Precision", value: "Sub-Micron Etching" }
+                ]}
               />
             </InteractiveTilt>
           </motion.div>

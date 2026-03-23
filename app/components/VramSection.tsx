@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import InteractiveTilt from "./InteractiveTilt";
+import HudOverlay from "./HudOverlay";
 
 export default function VramSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [hudActive, setHudActive] = useState(false);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -35,6 +37,14 @@ export default function VramSection() {
   const desc3Y = useTransform(scrollYProgress, [0.4, 0.52], [20, 0]);
 
   const sectionOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest > 0.2 && latest < 0.8) {
+      if (!hudActive) setHudActive(true);
+    } else {
+      if (hudActive) setHudActive(false);
+    }
+  });
 
   return (
     <section
@@ -117,6 +127,15 @@ export default function VramSection() {
                 className="relative z-10 w-[75%] max-w-lg drop-shadow-[0_0_60px_rgba(236,72,153,0.15)]"
                 animate={{ y: [0, -12, 0] }}
                 transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+              />
+              <HudOverlay 
+                isVisible={hudActive} 
+                side="right"
+                stats={[
+                  { label: "Memory Type", value: "GDDR6X Ultra" },
+                  { label: "Bandwidth", value: "1,008 GB/s" },
+                  { label: "Capacity", value: "24GB Precision" }
+                ]}
               />
             </InteractiveTilt>
           </motion.div>
